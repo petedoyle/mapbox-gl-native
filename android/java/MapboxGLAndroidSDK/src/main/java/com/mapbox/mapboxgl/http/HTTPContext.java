@@ -27,7 +27,6 @@ class HTTPContext {
     private OkHttpClient mClient;
 
     private HTTPContext() {
-        super();
         mClient = new OkHttpClient();
     }
 

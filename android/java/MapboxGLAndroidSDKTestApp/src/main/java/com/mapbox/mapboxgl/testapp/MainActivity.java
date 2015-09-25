@@ -30,6 +30,8 @@ import com.mapbox.mapboxgl.annotations.MarkerOptions;
 import com.mapbox.mapboxgl.annotations.PolygonOptions;
 import com.mapbox.mapboxgl.annotations.PolylineOptions;
 import com.mapbox.mapboxgl.geometry.LatLng;
+import com.mapbox.mapboxgl.metrics.Event;
+import com.mapbox.mapboxgl.metrics.EventManager;
 import com.mapbox.mapboxgl.views.MapView;
 import io.fabric.sdk.android.Fabric;
 import java.io.BufferedReader;
@@ -69,6 +71,9 @@ public class MainActivity extends AppCompatActivity {
 
     // Used for Annotations
     private boolean mIsAnnotationsOn = false;
+
+    // Used for metrics
+    private EventManager mEventManager;
 
     //
     // Lifecycle events
@@ -168,6 +173,9 @@ public class MainActivity extends AppCompatActivity {
         mNavigationView.getMenu().findItem(R.id.action_markers).setChecked(mIsAnnotationsOn);
         changeMapStyle(mSelectedStyle);
         toggleGps(mMapView.isMyLocationEnabled());
+
+        // Load metrics
+        mEventManager = new EventManager(this);
     }
 
     /**
@@ -202,6 +210,8 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         mMapView.onResume();
+
+        mEventManager.pushEvent(new Event());
     }
 
     @Override

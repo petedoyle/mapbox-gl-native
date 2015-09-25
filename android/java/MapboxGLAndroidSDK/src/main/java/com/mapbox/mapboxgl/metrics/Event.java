@@ -1,8 +1,6 @@
 package com.mapbox.mapboxgl.metrics;
 
-import java.util.Date;
-
-class Event {
+public class Event {
 
     // mapbox-events stock attributes
     private String event;

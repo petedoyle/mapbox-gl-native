@@ -3,7 +3,7 @@ package com.mapbox.mapboxgl.annotations;
 import android.graphics.Point;
 import android.view.View;
 import com.mapbox.mapboxgl.geometry.LatLng;
-import com.mapbox.mapboxgl.views.R;
+import com.mapbox.mapboxgl.R;
 
 public class Marker extends Annotation {
 

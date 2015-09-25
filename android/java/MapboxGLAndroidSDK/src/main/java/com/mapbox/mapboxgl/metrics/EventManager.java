@@ -1,6 +1,15 @@
 package com.mapbox.mapboxgl.metrics;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
+
 public class EventManager {
+
+    static final String TAG = "EventManager";
 
     static final int VERSION = 1;
     static final String USER_AGENT = "MapboxEventsAndroid/1.0";
@@ -8,41 +17,57 @@ public class EventManager {
 
     private static EventManager mInstance = null;
 
-    private EventManager() {
-        super();
+    private Context mContext;
 
+    public EventManager(Context context) {
+        mContext = context;
+
+        // Register the status receiver
+        LocalBroadcastManager.getInstance(context).registerReceiver(new StatusReceiver(), new IntentFilter(EventService.ACTION_EVENT_STATUS));
     }
 
-    public static EventManager getInstance() {
+    /*public static EventManager getInstance() {
         if (mInstance == null) {
             mInstance = new EventManager();
         }
 
         return mInstance;
-    }
+    }*/
 
-    void pauseMetricsCollection() {
-
-    }
-
-    void resumeMetricsCollection() {
+    public void pauseMetricsCollection() {
 
     }
 
-    void pushEvent(Event event) {
+    public void resumeMetricsCollection() {
 
     }
 
-    boolean isPushEnabled() {
+    public void pushEvent(Event event) {
+        String data = "foobar";
+        Log.v(TAG, "sending event: " + data);
+        Intent intent = new Intent(mContext, EventService.class);
+        intent.putExtra(EventService.EXTRA_EVENT_DATA, data);
+        mContext.startService(intent);
+    }
+
+    public boolean isPushEnabled() {
         return true;
     }
 
-    void flush() {
+    public void flush() {
 
     }
 
-    void validate() {
+    public void validate() {
 
     }
 
+    private class StatusReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String status = intent.getStringExtra(EventService.EXTRA_EVENT_STATUS);
+            Log.v(TAG, "status received: " + status);
+        }
+    }
 }
