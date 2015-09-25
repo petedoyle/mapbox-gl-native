@@ -6,6 +6,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.ConnectionSpec;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -13,6 +14,20 @@ import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.security.GeneralSecurityException;
+import java.security.KeyStore;
+import java.security.SecureRandom;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
 
 public class EventService extends IntentService {
 
@@ -33,14 +48,21 @@ public class EventService extends IntentService {
     public static final String STATUS_FAILED_HTTP = "FAILED_HTTP";
 
     static final String USER_AGENT = "MapboxEventsAndroid/1.0";
-    static final String EVENTS_API_BASE = "https://api.tiles.mapbox.com";
+    static final String EVENTS_API_SERVER = "api.tiles.mapbox.com";
+    static final String EVENTS_API_TEST_SERVER = "cloudfront-staging.tilestream.net";
+
+    static final String CERTIFICATE_GEOTRUST = "api_mapbox_com-digicert.der";
+    static final String CERTIFICATE_DIGICERT = "api_mapbox_com-geotrust.der";
+    static final String CERTIFICATE_TEST = "star_tilestream_net.der";
 
     private OkHttpClient mHttpClient;
+
+    private boolean mUseTestServer = false;
 
     public EventService() {
         super(TAG);
 
-        mHttpClient = new OkHttpClient();
+        mUseTestServer = true;
     }
 
     @Override
@@ -49,10 +71,27 @@ public class EventService extends IntentService {
         String accessToken = intent.getStringExtra(EXTRA_ACCESS_TOKEN);
         Log.v(TAG, "event received: access token = " + accessToken + ", data = " + data);
 
+        // Create HTTP client with strict HTTPS requirements and certificate pinning
+        if (mHttpClient == null) {
+            mHttpClient = new OkHttpClient();
+            mHttpClient.setConnectionSpecs(Collections.singletonList(ConnectionSpec.MODERN_TLS));
+            ArrayList<Certificate> certificates = new ArrayList<>();
+            if (mUseTestServer) {
+                Log.v(TAG, "Using test event API server!");
+                certificates.add(loadCertificateFromAsset(CERTIFICATE_TEST));
+            } else {
+                certificates.add(loadCertificateFromAsset(CERTIFICATE_DIGICERT));
+                certificates.add(loadCertificateFromAsset(CERTIFICATE_GEOTRUST));
+            }
+            SSLContext sslContext = sslContextForTrustedCertificates(certificates);
+            mHttpClient.setSslSocketFactory(sslContext.getSocketFactory());
+        }
+
         // Post the data to the server
-        String url = EVENTS_API_BASE + "/events/v1?access_token=" + accessToken;
+        String server = mUseTestServer ? EVENTS_API_TEST_SERVER : EVENTS_API_SERVER;
+        String url = "https://" + server + "/events/v1?access_token=" + accessToken;
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), data);
-        Request request = new Request.Builder().url(url).post(body).build();
+        Request request = new Request.Builder().addHeader("User-Agent", USER_AGENT).url(url).post(body).build();
         mHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
@@ -82,5 +121,57 @@ public class EventService extends IntentService {
             }
         });
 
+    }
+
+    private Certificate loadCertificateFromAsset(String fileName) {
+        try {
+            CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+            InputStream in = getAssets().open(fileName);
+            Certificate certificate = certificateFactory.generateCertificate(in);
+            in.close();
+            return certificate;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (CertificateException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private SSLContext sslContextForTrustedCertificates(Collection<? extends Certificate> certificates) {
+        try {
+            // Put the certificates a key store.
+            char[] password = "password".toCharArray(); // Any password will work.
+            KeyStore keyStore = newEmptyKeyStore(password);
+            int index = 0;
+            for (Certificate certificate : certificates) {
+                String certificateAlias = Integer.toString(index++);
+                keyStore.setCertificateEntry(certificateAlias, certificate);
+            }
+
+            // Wrap it up in an SSL context.
+            KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(
+                    KeyManagerFactory.getDefaultAlgorithm());
+            keyManagerFactory.init(keyStore, password);
+            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(
+                    TrustManagerFactory.getDefaultAlgorithm());
+            trustManagerFactory.init(keyStore);
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(),
+                    new SecureRandom());
+            return sslContext;
+        } catch (GeneralSecurityException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private KeyStore newEmptyKeyStore(char[] password) throws GeneralSecurityException {
+        try {
+            KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            InputStream in = null; // By convention, 'null' creates an empty key store.
+            keyStore.load(in, password);
+            return keyStore;
+        } catch (IOException e) {
+            throw new AssertionError(e);
+        }
     }
 }

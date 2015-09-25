@@ -15,7 +15,8 @@ MapboxGLAndroidSDK/src/main/jniLibs/
 MapboxGLAndroidSDK/src/main/obj.target/
 
 # Lib assets
-MapboxGLAndroidSDK/src/main/assets/
+MapboxGLAndroidSDK/src/main/assets/styles/
+MapboxGLAndroidSDK/src/main/assets/ca-bundle.crt
 
 # Local settings
 local.properties
