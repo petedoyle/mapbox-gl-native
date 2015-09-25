@@ -60,6 +60,7 @@ import com.mapbox.mapboxgl.annotations.PolylineOptions;
 import com.mapbox.mapboxgl.geometry.BoundingBox;
 import com.mapbox.mapboxgl.geometry.LatLng;
 import com.mapbox.mapboxgl.geometry.LatLngZoom;
+import com.mapbox.mapboxgl.utils.Utils;
 import com.mapzen.android.lost.api.LocationListener;
 import com.mapzen.android.lost.api.LocationRequest;
 import com.mapzen.android.lost.api.LocationServices;
@@ -764,15 +765,8 @@ public class MapView extends FrameLayout implements LocationListener {
         return mStyleUrl;
     }
 
-    private void validateAccessToken(@NonNull String accessToken) {
-
-        if (TextUtils.isEmpty(accessToken) || (!accessToken.startsWith("pk.") && !accessToken.startsWith("sk."))) {
-            throw new RuntimeException("Using MapView requires setting a valid access token. See the README.md");
-        }
-    }
-
     public void setAccessToken(@NonNull String accessToken) {
-        validateAccessToken(accessToken);
+        Utils.validateAccessToken(accessToken);
         mNativeMapView.setAccessToken(accessToken);
     }
 
@@ -886,7 +880,7 @@ public class MapView extends FrameLayout implements LocationListener {
         }
 
         // Force a check for an access token
-        validateAccessToken(getAccessToken());
+        Utils.validateAccessToken(getAccessToken());
 
         mNativeMapView.initializeDisplay();
         mNativeMapView.initializeContext();

@@ -106,10 +106,11 @@ public class MainActivity extends AppCompatActivity {
 
         mMapView = (MapView) findViewById(R.id.mainMapView);
         // Load the access token
+        String accessToken = null;
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(getResources().openRawResource(R.raw.token)));
-            String line = reader.readLine();
-            mMapView.setAccessToken(line);
+            accessToken = reader.readLine();
+            mMapView.setAccessToken(accessToken);
         } catch (IOException e) {
             Log.e(TAG, "Error loading access token from token.txt: " + e.toString());
         }
@@ -175,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
         toggleGps(mMapView.isMyLocationEnabled());
 
         // Load metrics
-        mEventManager = new EventManager(this);
+        mEventManager = new EventManager(this, accessToken);
     }
 
     /**
