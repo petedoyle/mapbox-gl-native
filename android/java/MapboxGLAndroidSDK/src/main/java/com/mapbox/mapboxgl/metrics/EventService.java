@@ -62,7 +62,7 @@ public class EventService extends IntentService {
     public EventService() {
         super(TAG);
 
-        mUseTestServer = true;
+        mUseTestServer = false;
     }
 
     @Override

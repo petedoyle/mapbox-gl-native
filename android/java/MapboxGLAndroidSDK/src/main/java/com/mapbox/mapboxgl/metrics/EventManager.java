@@ -10,6 +10,10 @@ import android.util.Log;
 
 import com.mapbox.mapboxgl.utils.Utils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class EventManager {
 
     static final String TAG = "EventManager";
@@ -47,7 +51,19 @@ public class EventManager {
     }
 
     public void pushEvent(@NonNull Event event) {
-        String data = "foobar";
+        JSONObject jsonEvent = new JSONObject();
+        try {
+            jsonEvent.put("event", "appUserTurnstile");
+            jsonEvent.put("created", Utils.getISO8601StringForCurrentDate());
+            jsonEvent.put("vendorId", "foobar");
+            jsonEvent.put("appBundleId", "foobar");
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        JSONArray json = new JSONArray();
+        json.put(jsonEvent);
+        String data = json.toString();
+
         Log.v(TAG, "sending event: " + data);
         Intent intent = new Intent(mContext, EventService.class);
         intent.putExtra(EventService.EXTRA_ACCESS_TOKEN, mAccessToken);
