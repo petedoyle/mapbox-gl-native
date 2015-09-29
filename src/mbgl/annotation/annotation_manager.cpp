@@ -426,7 +426,7 @@ const LiveTile* AnnotationManager::getTile(const TileID& id) {
 
                         GeometryCollection renderGeometry;
 
-                        for (auto& shapeGeometry : shapeFeature.geometry) {
+                        for (auto& shapeGeometry : shapeFeature.tileGeometry) {
 
                             std::vector<Coordinate> renderLine;
 
