@@ -44,6 +44,13 @@
         'cflags_cc': [
           '-Wno-unknown-pragmas', # We are using '#pragma mark', but it is only available on Darwin.
         ],
+        'conditions': [
+          ['cxx_host != "clang"', {
+            'cflags_cc': [
+              '-fabi-version=0',
+            ],
+          }],
+        ]
       }],
     ],
     'target_conditions': [
@@ -86,6 +93,7 @@
           'GCC_GENERATE_DEBUGGING_SYMBOLS': 'YES',
           'DEAD_CODE_STRIPPING': 'NO',
           'GCC_INLINES_ARE_PRIVATE_EXTERN': 'NO',
+          'GCC_SYMBOLS_PRIVATE_EXTERN': 'NO',
           'OTHER_CPLUSPLUSFLAGS': [ '-fno-omit-frame-pointer','-fwrapv', '-fstack-protector-all', '-fno-common']
         }
       },
@@ -96,7 +104,8 @@
           'GCC_OPTIMIZATION_LEVEL': '3',
           'GCC_GENERATE_DEBUGGING_SYMBOLS': 'YES',
           'DEAD_CODE_STRIPPING': 'NO',
-          'GCC_INLINES_ARE_PRIVATE_EXTERN': 'NO'
+          'GCC_INLINES_ARE_PRIVATE_EXTERN': 'YES',
+          'GCC_SYMBOLS_PRIVATE_EXTERN': 'NO',
         }
       },
     },
