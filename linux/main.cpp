@@ -139,7 +139,7 @@ int main(int argc, char *argv[]) {
         map.setStyleURL(newStyle.first);
         view->setWindowTitle(newStyle.second);
 
-        mbgl::Log::Info(mbgl::Event::Setup, std::string("Changed style to: ") + newStyle.first);
+        mbgl::Log::Info(mbgl::Event::Setup, "Changed style to: %s", newStyle.first.c_str());
     });
 
     // Load style
