@@ -10,6 +10,9 @@ build/
 *.so
 *.apk
 
+# Captures
+captures/
+
 # JNI
 MapboxGLAndroidSDK/src/main/jniLibs/
 MapboxGLAndroidSDK/src/main/obj.target/

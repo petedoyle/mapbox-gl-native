@@ -20,6 +20,9 @@ final class CompassView extends ImageView implements SensorEventListener {
 
     private CompassDelegate mCompassDelegate;
 
+    // Controls the sensor update rate in milliseconds
+    private static final int UPDATE_RATE_MS = 1000;
+
     // Sensor model
     private SensorManager mSensorManager;
     private Sensor mSensorAccelerometer;
@@ -37,9 +40,10 @@ final class CompassView extends ImageView implements SensorEventListener {
     private GeomagneticField mGeomagneticField;
     private Location mGpsLocation;
 
-    // Compass date
+    // Compass data
     private float mCompassBearing;
     private boolean mCompassValid;
+    private long mCompassUpdateNextTimestamp = 0;
 
     public CompassView(Context context) {
         super(context);
@@ -87,8 +91,10 @@ final class CompassView extends ImageView implements SensorEventListener {
     }
 
     public void registerListeners(CompassDelegate compassDelegate) {
-        mSensorManager.registerListener(this, mSensorAccelerometer, SensorManager.SENSOR_DELAY_UI);
-        mSensorManager.registerListener(this, mSensorMagneticField, SensorManager.SENSOR_DELAY_UI);
+        // Rate limit to UPDATE_RATE_US, events can still be delivered faster so
+        // need to rate limit in handler too
+        mSensorManager.registerListener(this, mSensorAccelerometer, UPDATE_RATE_MS * 1000);
+        mSensorManager.registerListener(this, mSensorMagneticField, UPDATE_RATE_MS * 1000);
         mCompassDelegate = compassDelegate;
     }
 
@@ -100,6 +106,8 @@ final class CompassView extends ImageView implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+        long currentTime = System.currentTimeMillis();
+
         switch (event.sensor.getType()) {
             case Sensor.TYPE_ACCELEROMETER:
                 System.arraycopy(event.values, 0, mValuesAccelerometer, 0, 3);
@@ -108,6 +116,11 @@ final class CompassView extends ImageView implements SensorEventListener {
                 System.arraycopy(event.values, 0, mValuesMagneticField, 0, 3);
                 break;
         }
+
+        if (currentTime < mCompassUpdateNextTimestamp) {
+            return;
+        }
+        mCompassUpdateNextTimestamp = currentTime + UPDATE_RATE_MS;
 
         mSensorValid = SensorManager.getRotationMatrix(mMatrixR, mMatrixI,
                 mValuesAccelerometer,
@@ -121,7 +134,7 @@ final class CompassView extends ImageView implements SensorEventListener {
                         (float) mGpsLocation.getLatitude(),
                         (float) mGpsLocation.getLongitude(),
                         (float) mGpsLocation.getAltitude(),
-                        System.currentTimeMillis());
+                        currentTime);
                 mCompassBearing = (float) Math.toDegrees(mMatrixValues[0]) + mGeomagneticField.getDeclination();
                 mCompassValid = true;
             }
