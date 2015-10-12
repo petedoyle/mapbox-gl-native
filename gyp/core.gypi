@@ -33,13 +33,11 @@
           '<@(boost_cflags)',
           '<@(geojsonvt_cflags)',
           '<@(variant_cflags)',
-          '<@(rapidjson_cflags)',
         ],
         'cflags': [
           '<@(libuv_cflags)',
           '<@(opengl_cflags)',
           '<@(variant_cflags)',
-          '<@(rapidjson_cflags)',
           '-fPIC'
         ],
         'ldflags': [

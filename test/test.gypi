@@ -106,7 +106,6 @@
           '<@(sqlite_cflags)',
           '<@(geojsonvt_cflags)',
           '<@(variant_cflags)',
-          '<@(rapidjson_cflags)',
         ],
         'ldflags': [
           '<@(gtest_ldflags)',
