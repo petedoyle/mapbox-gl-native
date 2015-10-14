@@ -8,7 +8,7 @@ This document describes the process for setting up Mapbox GL for development _on
  - [Boost headers](http://boost.org/)
  - [`zlib`](http://www.zlib.net/)
  - [`libpng`](http://www.libpng.org/pub/png/libpng.html)
- - [`libuv 0.10+`](https://github.com/joyent/libuv)
+ - [`libuv 0.10+`](https://github.com/libuv/libuv) (1.7+ recommended)
  - [`glfw 3.1+`](http://www.glfw.org/)
  - [`libcurl`](http://curl.haxx.se/libcurl/) (depends on OpenSSL; Linux only)
  - Apple Command Line Tools (for build on OS X; available at [Apple Developer](https://developer.apple.com/downloads))
