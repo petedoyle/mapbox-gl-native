@@ -11,6 +11,7 @@
           'GCC_VERSION': 'com.apple.compilers.llvm.clang.1_0',
           'GCC_ENABLE_CPP_EXCEPTIONS': 'YES',
           'GCC_ENABLE_CPP_RTTI': 'YES',
+          'GCC_SYMBOLS_PRIVATE_EXTERN': 'YES',
           'OTHER_CPLUSPLUSFLAGS': [
             '-std=c++14',
             '-Werror',
@@ -37,6 +38,7 @@
           '-Wno-error=unused-parameter',
           '-frtti',
           '-fexceptions',
+          '-fvisibility=hidden',
           '${CFLAGS}',
         ],
       }],
@@ -85,7 +87,6 @@
           'GCC_OPTIMIZATION_LEVEL': '0',
           'GCC_GENERATE_DEBUGGING_SYMBOLS': 'YES',
           'DEAD_CODE_STRIPPING': 'NO',
-          'GCC_INLINES_ARE_PRIVATE_EXTERN': 'NO',
           'OTHER_CPLUSPLUSFLAGS': [ '-fno-omit-frame-pointer','-fwrapv', '-fstack-protector-all', '-fno-common']
         }
       },
@@ -96,7 +97,6 @@
           'GCC_OPTIMIZATION_LEVEL': '3',
           'GCC_GENERATE_DEBUGGING_SYMBOLS': 'YES',
           'DEAD_CODE_STRIPPING': 'NO',
-          'GCC_INLINES_ARE_PRIVATE_EXTERN': 'NO'
         }
       },
     },
