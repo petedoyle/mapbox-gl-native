@@ -1,7 +1,7 @@
 package com.mapbox.mapboxsdk.testapp;
 
+import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -34,11 +34,11 @@ public class MapFragmentActivity extends AppCompatActivity {
         }
 
         if (savedInstanceState == null) {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.add(R.id.fragment_container, mMapFragment = new MyMapFragment(), TAG_FRAGMENT);
             transaction.commit();
         } else {
-            mMapFragment = (MyMapFragment) getSupportFragmentManager().findFragmentByTag(TAG_FRAGMENT);
+            mMapFragment = (MyMapFragment) getFragmentManager().findFragmentByTag(TAG_FRAGMENT);
         }
     }
 
