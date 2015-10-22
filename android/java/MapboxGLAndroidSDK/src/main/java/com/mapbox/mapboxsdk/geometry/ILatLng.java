@@ -4,9 +4,9 @@ package com.mapbox.mapboxsdk.geometry;
  * A Latitude, Longitude point.
  */
 public interface ILatLng {
-    double getLatitude();
+	double getLatitude();
 
-    double getLongitude();
+	double getLongitude();
 
-    double getAltitude();
+	double getAltitude();
 }

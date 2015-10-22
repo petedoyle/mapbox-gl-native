@@ -18,25 +18,25 @@ public class BaseTest {
      * Shortcuts for common UI tests
      */
 
-    protected void checkViewIsDisplayed(int id) {
-        onView(withId(id))
-                .check(matches(isDisplayed()));
-    }
+	protected void checkViewIsDisplayed(int id) {
+		onView(withId(id))
+				.check(matches(isDisplayed()));
+	}
 
     /*
      * Screenshots logic
      */
 
-    protected void takeNamedScreenshot(final Activity activity, final String name) {
+	protected void takeNamedScreenshot(final Activity activity, final String name) {
 
-        // Screenshots need to be taken on the UI thread
-        activity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ScreenshotUtil.take(activity, name);
-            }
-        });
+		// Screenshots need to be taken on the UI thread
+		activity.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				ScreenshotUtil.take(activity, name);
+			}
+		});
 
-    }
+	}
 
 }

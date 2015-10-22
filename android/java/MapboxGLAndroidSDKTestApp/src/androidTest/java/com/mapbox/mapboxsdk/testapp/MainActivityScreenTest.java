@@ -23,44 +23,44 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 @LargeTest
 public class MainActivityScreenTest extends BaseTest {
 
-    private final static String HOME_BUTTON_STRING = "Navigate up";
+	private final static String HOME_BUTTON_STRING = "Navigate up";
 
-    @Rule
-    public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(
-            MainActivity.class);
+	@Rule
+	public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(
+			MainActivity.class);
 
-    private MainActivity mActivity = null;
+	private MainActivity mActivity = null;
 
-    @Before
-    public void setActivity() {
-        mActivity = mActivityRule.getActivity();
-    }
+	@Before
+	public void setActivity() {
+		mActivity = mActivityRule.getActivity();
+	}
 
-    @Test
-    public void testSanity() {
-        checkViewIsDisplayed(R.id.mainMapView);
-    }
+	@Test
+	public void testSanity() {
+		checkViewIsDisplayed(R.id.mainMapView);
+	}
 
     /*
      * Take a screenshot of Mapbox Streets to monitor #1649
      */
 
-    @Test
-    public void testMapboxStreetsBlackAndWhite() {
-        // Click home and switch to Mapbox streets
-        onView(withContentDescription(HOME_BUTTON_STRING))
-                .perform(click());
-        onView(withText(R.string.styleMapboxStreets))
-                .perform(click());
+	@Test
+	public void testMapboxStreetsBlackAndWhite() {
+		// Click home and switch to Mapbox streets
+		onView(withContentDescription(HOME_BUTTON_STRING))
+				.perform(click());
+		onView(withText(R.string.styleMapboxStreets))
+				.perform(click());
 
-        // Zoom in
-        onView(withId(R.id.mainMapView))
-                .perform(doubleClick());
-        onView(withId(R.id.mainMapView))
-                .perform(doubleClick());
+		// Zoom in
+		onView(withId(R.id.mainMapView))
+				.perform(doubleClick());
+		onView(withId(R.id.mainMapView))
+				.perform(doubleClick());
 
-        // Standard screenshot
-        takeNamedScreenshot(mActivity, "testMapboxStreetsBlackAndWhite");
-    }
+		// Standard screenshot
+		takeNamedScreenshot(mActivity, "testMapboxStreetsBlackAndWhite");
+	}
 
 }

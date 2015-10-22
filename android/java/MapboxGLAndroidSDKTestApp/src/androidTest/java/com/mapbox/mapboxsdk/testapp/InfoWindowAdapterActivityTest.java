@@ -21,21 +21,21 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 @LargeTest
 public class InfoWindowAdapterActivityTest extends BaseTest {
 
-    @Rule
-    public ActivityTestRule<InfoWindowAdapterActivity> mActivityRule = new ActivityTestRule<>(
-            InfoWindowAdapterActivity.class);
+	@Rule
+	public ActivityTestRule<InfoWindowAdapterActivity> mActivityRule = new ActivityTestRule<>(
+			InfoWindowAdapterActivity.class);
 
-    private InfoWindowAdapterActivity mActivity = null;
+	private InfoWindowAdapterActivity mActivity = null;
 
-    @Before
-    public void setActivity() {
-        mActivity = mActivityRule.getActivity();
-    }
+	@Before
+	public void setActivity() {
+		mActivity = mActivityRule.getActivity();
+	}
 
-    @Test
-    public void testSanity() {
-        onView(withId(R.id.mapView))
-                .check(matches(isDisplayed()));
-    }
+	@Test
+	public void testSanity() {
+		onView(withId(R.id.mapView))
+				.check(matches(isDisplayed()));
+	}
 
 }

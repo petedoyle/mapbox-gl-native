@@ -6,19 +6,19 @@ import android.view.MotionEvent;
 /**
  * @author Almer Thie (code.almeros.com) Copyright (c) 2013, Almer Thie
  *         (code.almeros.com)
- *
+ *         <p>
  *         All rights reserved.
- *
+ *         <p>
  *         Redistribution and use in source and binary forms, with or without
  *         modification, are permitted provided that the following conditions
  *         are met:
- *
+ *         <p>
  *         Redistributions of source code must retain the above copyright
  *         notice, this list of conditions and the following disclaimer.
  *         Redistributions in binary form must reproduce the above copyright
  *         notice, this list of conditions and the following disclaimer in the
  *         documentation and/or other materials provided with the distribution.
- *
+ *         <p>
  *         THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  *         "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  *         LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -33,129 +33,125 @@ import android.view.MotionEvent;
  *         POSSIBILITY OF SUCH DAMAGE.
  */
 public abstract class BaseGestureDetector {
-    protected final Context mContext;
-    protected boolean mGestureInProgress;
+	/**
+	 * This value is the threshold ratio between the previous combined pressure
+	 * and the current combined pressure. When pressure decreases rapidly
+	 * between events the position values can often be imprecise, as it usually
+	 * indicates that the user is in the process of lifting a pointer off of the
+	 * device. This value was tuned experimentally.
+	 */
+	protected static final float PRESSURE_THRESHOLD = 0.67f;
+	protected final Context mContext;
+	protected       boolean mGestureInProgress;
+	protected MotionEvent mPrevEvent;
+	protected MotionEvent mCurrEvent;
+	protected float mCurrPressure;
+	protected float mPrevPressure;
+	protected long  mTimeDelta;
 
-    protected MotionEvent mPrevEvent;
-    protected MotionEvent mCurrEvent;
+	public BaseGestureDetector(Context context) {
+		mContext = context;
+	}
 
-    protected float mCurrPressure;
-    protected float mPrevPressure;
-    protected long mTimeDelta;
+	/**
+	 * All gesture detectors need to be called through this method to be able to
+	 * detect gestures. This method delegates work to handler methods
+	 * (handleStartProgressEvent, handleInProgressEvent) implemented in
+	 * extending classes.
+	 *
+	 * @param event MotionEvent
+	 * @return {@code true} as handled
+	 */
+	public boolean onTouchEvent(MotionEvent event) {
+		final int actionCode = event.getAction() & MotionEvent.ACTION_MASK;
+		if (!mGestureInProgress) {
+			handleStartProgressEvent(actionCode, event);
+		} else {
+			handleInProgressEvent(actionCode, event);
+		}
+		return true;
+	}
 
-    /**
-     * This value is the threshold ratio between the previous combined pressure
-     * and the current combined pressure. When pressure decreases rapidly
-     * between events the position values can often be imprecise, as it usually
-     * indicates that the user is in the process of lifting a pointer off of the
-     * device. This value was tuned experimentally.
-     */
-    protected static final float PRESSURE_THRESHOLD = 0.67f;
+	/**
+	 * Called when the current event occurred when NO gesture is in progress
+	 * yet. The handling in this implementation may set the gesture in progress
+	 * (via mGestureInProgress) or out of progress
+	 *
+	 * @param actionCode Action Code from MotionEvent
+	 * @param event      MotionEvent
+	 */
+	protected abstract void handleStartProgressEvent(int actionCode,
+	                                                 MotionEvent event);
 
-    public BaseGestureDetector(Context context) {
-        mContext = context;
-    }
+	/**
+	 * Called when the current event occurred when a gesture IS in progress. The
+	 * handling in this implementation may set the gesture out of progress (via
+	 * mGestureInProgress).
+	 *
+	 * @param actionCode Action Code from MotionEvent
+	 * @param event      MotionEvent
+	 */
+	protected abstract void handleInProgressEvent(int actionCode,
+	                                              MotionEvent event);
 
-    /**
-     * All gesture detectors need to be called through this method to be able to
-     * detect gestures. This method delegates work to handler methods
-     * (handleStartProgressEvent, handleInProgressEvent) implemented in
-     * extending classes.
-     *
-     * @param event MotionEvent
-     * @return {@code true} as handled
-     */
-    public boolean onTouchEvent(MotionEvent event) {
-        final int actionCode = event.getAction() & MotionEvent.ACTION_MASK;
-        if (!mGestureInProgress) {
-            handleStartProgressEvent(actionCode, event);
-        } else {
-            handleInProgressEvent(actionCode, event);
-        }
-        return true;
-    }
+	protected void updateStateByEvent(MotionEvent curr) {
+		final MotionEvent prev = mPrevEvent;
 
-    /**
-     * Called when the current event occurred when NO gesture is in progress
-     * yet. The handling in this implementation may set the gesture in progress
-     * (via mGestureInProgress) or out of progress
-     *
-     * @param actionCode Action Code from MotionEvent
-     * @param event MotionEvent
-     */
-    protected abstract void handleStartProgressEvent(int actionCode,
-            MotionEvent event);
+		// Reset mCurrEvent
+		if (mCurrEvent != null) {
+			mCurrEvent.recycle();
+			mCurrEvent = null;
+		}
+		mCurrEvent = MotionEvent.obtain(curr);
 
-    /**
-     * Called when the current event occurred when a gesture IS in progress. The
-     * handling in this implementation may set the gesture out of progress (via
-     * mGestureInProgress).
-     *
-     *
-     * @param actionCode Action Code from MotionEvent
-     * @param event MotionEvent
-     */
-    protected abstract void handleInProgressEvent(int actionCode,
-            MotionEvent event);
+		// Delta time
+		mTimeDelta = curr.getEventTime() - prev.getEventTime();
 
-    protected void updateStateByEvent(MotionEvent curr) {
-        final MotionEvent prev = mPrevEvent;
+		// Pressure
+		mCurrPressure = curr.getPressure(curr.getActionIndex());
+		mPrevPressure = prev.getPressure(prev.getActionIndex());
+	}
 
-        // Reset mCurrEvent
-        if (mCurrEvent != null) {
-            mCurrEvent.recycle();
-            mCurrEvent = null;
-        }
-        mCurrEvent = MotionEvent.obtain(curr);
+	protected void resetState() {
+		if (mPrevEvent != null) {
+			mPrevEvent.recycle();
+			mPrevEvent = null;
+		}
+		if (mCurrEvent != null) {
+			mCurrEvent.recycle();
+			mCurrEvent = null;
+		}
+		mGestureInProgress = false;
+	}
 
-        // Delta time
-        mTimeDelta = curr.getEventTime() - prev.getEventTime();
+	/**
+	 * Returns {@code true} if a gesture is currently in progress.
+	 *
+	 * @return {@code true} if a gesture is currently in progress, {@code false}
+	 * otherwise.
+	 */
+	public boolean isInProgress() {
+		return mGestureInProgress;
+	}
 
-        // Pressure
-        mCurrPressure = curr.getPressure(curr.getActionIndex());
-        mPrevPressure = prev.getPressure(prev.getActionIndex());
-    }
+	/**
+	 * Return the time difference in milliseconds between the previous accepted
+	 * GestureDetector event and the current GestureDetector event.
+	 *
+	 * @return Time difference since the last move event in milliseconds.
+	 */
+	public long getTimeDelta() {
+		return mTimeDelta;
+	}
 
-    protected void resetState() {
-        if (mPrevEvent != null) {
-            mPrevEvent.recycle();
-            mPrevEvent = null;
-        }
-        if (mCurrEvent != null) {
-            mCurrEvent.recycle();
-            mCurrEvent = null;
-        }
-        mGestureInProgress = false;
-    }
-
-    /**
-     * Returns {@code true} if a gesture is currently in progress.
-     *
-     * @return {@code true} if a gesture is currently in progress, {@code false}
-     *         otherwise.
-     */
-    public boolean isInProgress() {
-        return mGestureInProgress;
-    }
-
-    /**
-     * Return the time difference in milliseconds between the previous accepted
-     * GestureDetector event and the current GestureDetector event.
-     *
-     * @return Time difference since the last move event in milliseconds.
-     */
-    public long getTimeDelta() {
-        return mTimeDelta;
-    }
-
-    /**
-     * Return the event time of the current GestureDetector event being
-     * processed.
-     *
-     * @return Current GestureDetector event time in milliseconds.
-     */
-    public long getEventTime() {
-        return mCurrEvent.getEventTime();
-    }
+	/**
+	 * Return the event time of the current GestureDetector event being
+	 * processed.
+	 *
+	 * @return Current GestureDetector event time in milliseconds.
+	 */
+	public long getEventTime() {
+		return mCurrEvent.getEventTime();
+	}
 
 }

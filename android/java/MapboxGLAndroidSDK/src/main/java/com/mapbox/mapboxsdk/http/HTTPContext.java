@@ -17,88 +17,90 @@ import javax.net.ssl.SSLException;
 
 class HTTPContext {
 
-    private static final int CONNECTION_ERROR = 0;
-    private static final int TEMPORARY_ERROR = 1;
-    private static final int PERMANENT_ERROR = 2;
-    private static final int CANCELED_ERROR = 3;
+	private static final int CONNECTION_ERROR = 0;
+	private static final int TEMPORARY_ERROR  = 1;
+	private static final int PERMANENT_ERROR  = 2;
+	private static final int CANCELED_ERROR   = 3;
 
-    private static HTTPContext mInstance = null;
+	private static HTTPContext mInstance = null;
 
-    private OkHttpClient mClient;
+	private OkHttpClient mClient;
 
-    private HTTPContext() {
-        super();
-        mClient = new OkHttpClient();
-    }
+	private HTTPContext() {
+		super();
+		mClient = new OkHttpClient();
+	}
 
-    public static HTTPContext getInstance() {
-        if (mInstance == null) {
-            mInstance = new HTTPContext();
-        }
+	public static HTTPContext getInstance() {
+		if (mInstance == null) {
+			mInstance = new HTTPContext();
+		}
 
-        return mInstance;
-    }
+		return mInstance;
+	}
 
-    public HTTPRequest createRequest(long nativePtr, String resourceUrl, String userAgent, String etag, String modified) {
-        return new HTTPRequest(nativePtr, resourceUrl, userAgent, etag, modified);
-    }
+	public HTTPRequest createRequest(long nativePtr, String resourceUrl, String userAgent, String etag, String modified) {
+		return new HTTPRequest(nativePtr, resourceUrl, userAgent, etag, modified);
+	}
 
-    public class HTTPRequest implements Callback {
-        private long mNativePtr = 0;
+	public class HTTPRequest implements Callback {
+		private long mNativePtr = 0;
 
-        private Call mCall;
-        private Request mRequest;
+		private Call    mCall;
+		private Request mRequest;
 
-        private native void nativeOnFailure(long nativePtr, int type, String message);
-        private native void nativeOnResponse(long nativePtr, int code, String message, String etag, String modified, String cacheControl, String expires, byte[] body);
+		private HTTPRequest(long nativePtr, String resourceUrl, String userAgent, String etag, String modified) {
+			mNativePtr = nativePtr;
+			Request.Builder builder = new Request.Builder().url(resourceUrl).tag(resourceUrl.toLowerCase(MapboxConstants.MAPBOX_LOCALE)).addHeader("User-Agent", userAgent);
+			if (etag.length() > 0) {
+				builder = builder.addHeader("If-None-Match", etag);
+			} else if (modified.length() > 0) {
+				builder = builder.addHeader("If-Modified-Since", modified);
+			}
+			mRequest = builder.build();
+		}
 
-        private HTTPRequest(long nativePtr, String resourceUrl, String userAgent, String etag, String modified) {
-            mNativePtr = nativePtr;
-            Request.Builder builder = new Request.Builder().url(resourceUrl).tag(resourceUrl.toLowerCase(MapboxConstants.MAPBOX_LOCALE)).addHeader("User-Agent", userAgent);
-            if (etag.length() > 0) {
-                builder = builder.addHeader("If-None-Match", etag);
-            } else if (modified.length() > 0) {
-                builder = builder.addHeader("If-Modified-Since", modified);
-            }
-            mRequest = builder.build();
-        }
+		private native void nativeOnFailure(long nativePtr, int type, String message);
 
-        public void start() {
-            mCall = HTTPContext.getInstance().mClient.newCall(mRequest);
-            mCall.enqueue(this);
-        }
+		private native void nativeOnResponse(long nativePtr, int code, String message, String etag, String modified, String cacheControl, String expires, byte[] body);
 
-        public void cancel() {
-            mCall.cancel();
-        }
+		public void start() {
+			mCall = HTTPContext.getInstance().mClient.newCall(mRequest);
+			mCall.enqueue(this);
+		}
 
-        @Override
-        public void onFailure(Request request, IOException e) {
-            int type = PERMANENT_ERROR;
-            if ((e instanceof UnknownHostException) || (e instanceof SocketException) || (e instanceof ProtocolException) || (e instanceof SSLException)) {
-                type = CONNECTION_ERROR;
-            } else if ((e instanceof InterruptedIOException)) {
-                type = TEMPORARY_ERROR;
-            } else if (mCall.isCanceled()) {
-                type = CANCELED_ERROR;
-            }
+		public void cancel() {
+			mCall.cancel();
+		}
 
-            nativeOnFailure(mNativePtr, type, e.getMessage());
-        }
+		@Override
+		public void onFailure(Request request, IOException e) {
+			int type = PERMANENT_ERROR;
+			if ((e instanceof UnknownHostException) || (e instanceof SocketException) || (e instanceof ProtocolException) || (e instanceof SSLException)) {
+				type = CONNECTION_ERROR;
+			} else if ((e instanceof InterruptedIOException)) {
+				type = TEMPORARY_ERROR;
+			} else if (mCall.isCanceled()) {
+				type = CANCELED_ERROR;
+			}
 
-        @Override
-        public void onResponse(Response response) throws IOException {
-            byte[] body;
-            try {
-                body = response.body().bytes();
-            } catch (IOException e) {
-                onFailure(mRequest, e);
-                return;
-            } finally {
-                response.body().close();
-            }
+			nativeOnFailure(mNativePtr, type, e.getMessage());
+		}
 
-            nativeOnResponse(mNativePtr, response.code(), response.message(), response.header("ETag"), response.header("Last-Modified"), response.header("Cache-Control"), response.header("Expires"), body);
-        }
-    }
+		@Override
+		public void onResponse(Response response) throws IOException {
+			byte[] body;
+			try {
+				body = response.body().bytes();
+			} catch (IOException e) {
+				onFailure(mRequest, e);
+				return;
+			} finally {
+				response.body().close();
+			}
+
+			nativeOnResponse(mNativePtr, response.code(), response.message(), response.header("ETag"), response.header("Last-Modified"), response.header("Cache-Control"),
+					response.header("Expires"), body);
+		}
+	}
 }

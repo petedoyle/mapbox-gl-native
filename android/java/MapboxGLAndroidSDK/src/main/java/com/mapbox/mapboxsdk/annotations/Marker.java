@@ -3,231 +3,236 @@ package com.mapbox.mapboxsdk.annotations;
 import android.graphics.Point;
 import android.support.annotation.Nullable;
 import android.view.View;
+
 import com.mapbox.mapboxsdk.R;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
 public final class Marker extends Annotation {
 
-    private float anchorU;
-    private float anchorV;
-    private boolean draggable;
-    private boolean flat;
-    private float infoWindowAnchorU;
-    private float infoWindowAnchorV;
-    private LatLng position;
-    private float rotation;
-    private String snippet;
-    private Sprite icon;
-    private String title;
-    private InfoWindow infoWindow = null;
+	private float   anchorU;
+	private float   anchorV;
+	private boolean draggable;
+	private boolean flat;
+	private float   infoWindowAnchorU;
+	private float   infoWindowAnchorV;
+	private LatLng  position;
+	private float   rotation;
+	private String  snippet;
+	private Sprite  icon;
+	private String  title;
+	private InfoWindow infoWindow = null;
 
-    private boolean infoWindowShown = false;
-    private int topOffsetPixels;
+	private boolean infoWindowShown = false;
+	private int topOffsetPixels;
 
-    /**
-     * Constructor
-     */
-    Marker() {
-        super();
-    }
+	/**
+	 * Constructor
+	 */
+	Marker() {
+		super();
+	}
 
-    /**
-     * If two markers have the same LatLng, they are equal.
-     *
-     * @param other object
-     * @return boolean - do they have the same LatLng
-     */
-    public boolean equals(Object other) {
-        if (!(other instanceof Marker)) return false;
-        double lat = position.getLatitude();
-        double lng = position.getLongitude();
-        LatLng otherPosition = ((Marker)other).getPosition();
-        double otherLat = otherPosition.getLatitude();
-        double otherLng = otherPosition.getLongitude();
-        return (lat == otherLat && otherLng == lng);
-    }
+	/**
+	 * If two markers have the same LatLng, they are equal.
+	 *
+	 * @param other object
+	 * @return boolean - do they have the same LatLng
+	 */
+	public boolean equals(Object other) {
+		if (!(other instanceof Marker)) {
+			return false;
+		}
+		double lat = position.getLatitude();
+		double lng = position.getLongitude();
+		LatLng otherPosition = ((Marker) other).getPosition();
+		double otherLat = otherPosition.getLatitude();
+		double otherLng = otherPosition.getLongitude();
+		return (lat == otherLat && otherLng == lng);
+	}
 
-    Point getAnchor() {
-        return new Point((int)anchorU, (int)anchorV);
-    }
+	Point getAnchor() {
+		return new Point((int) anchorU, (int) anchorV);
+	}
 
-    float getAnchorU() {
-        return anchorU;
-    }
+	float getAnchorU() {
+		return anchorU;
+	}
 
-    float getAnchorV() {
-        return anchorV;
-    }
+	float getAnchorV() {
+		return anchorV;
+	}
 
-    float getInfoWindowAnchorU() {
-        return infoWindowAnchorU;
-    }
+	float getInfoWindowAnchorU() {
+		return infoWindowAnchorU;
+	}
 
-    float getInfoWindowAnchorV() {
-        return infoWindowAnchorV;
-    }
+	float getInfoWindowAnchorV() {
+		return infoWindowAnchorV;
+	}
 
-    public LatLng getPosition() {
-        return position;
-    }
+	public LatLng getPosition() {
+		return position;
+	}
 
-    float getRotation() {
-        return rotation;
-    }
+	void setPosition(LatLng position) {
+		this.position = position;
+	}
 
-    public String getSnippet() {
-        return snippet;
-    }
+	float getRotation() {
+		return rotation;
+	}
 
-    public String getTitle() {
-        return title;
-    }
+	void setRotation(float rotation) {
+		this.rotation = rotation;
+	}
 
-    /**
-     * Do not use this method. Used internally by the SDK.
-     */
-    public void hideInfoWindow() {
-        if (infoWindow != null) {
-            infoWindow.close();
-        }
-        infoWindowShown = false;
-    }
+	public String getSnippet() {
+		return snippet;
+	}
 
-    boolean isDraggable() {
-        return draggable;
-    }
+	void setSnippet(String snippet) {
+		this.snippet = snippet;
+	}
 
-    boolean isFlat() {
-        return flat;
-    }
+	public String getTitle() {
+		return title;
+	}
 
-    /**
-     * Do not use this method. Used internally by the SDK.
-     */
-    public boolean isInfoWindowShown () {
-        return infoWindowShown;
-    }
+	void setTitle(String title) {
+		this.title = title;
+	}
 
-    void setAnchor(float u, float v) {
-        this.anchorU = u;
-        this.anchorV = v;
-    }
+	/**
+	 * Do not use this method. Used internally by the SDK.
+	 */
+	public void hideInfoWindow() {
+		if (infoWindow != null) {
+			infoWindow.close();
+		}
+		infoWindowShown = false;
+	}
 
-    void setDraggable(boolean draggable) {
-        this.draggable = draggable;
-    }
+	boolean isDraggable() {
+		return draggable;
+	}
 
-    void setFlat(boolean flat) {
-        this.flat = flat;
-    }
+	void setDraggable(boolean draggable) {
+		this.draggable = draggable;
+	}
 
-    void setInfoWindowAnchor(float u, float v) {
-        infoWindowAnchorU = u;
-        infoWindowAnchorV = v;
-    }
+	boolean isFlat() {
+		return flat;
+	}
 
-    void setPosition(LatLng position) {
-        this.position = position;
-    }
+	void setFlat(boolean flat) {
+		this.flat = flat;
+	}
 
-    void setRotation(float rotation) {
-        this.rotation = rotation;
-    }
+	/**
+	 * Do not use this method. Used internally by the SDK.
+	 */
+	public boolean isInfoWindowShown() {
+		return infoWindowShown;
+	}
 
-    void setSnippet(String snippet) {
-        this.snippet = snippet;
-    }
+	void setAnchor(float u, float v) {
+		this.anchorU = u;
+		this.anchorV = v;
+	}
 
-    /**
-     * Do not use this method. Used internally by the SDK.
-     */
-    public void setIcon(@Nullable Sprite icon) {
-        this.icon = icon;
-    }
+	void setInfoWindowAnchor(float u, float v) {
+		infoWindowAnchorU = u;
+		infoWindowAnchorV = v;
+	}
 
-    public Sprite getIcon() {
-        return icon;
-    }
+	public Sprite getIcon() {
+		return icon;
+	}
 
-    void setTitle(String title) {
-        this.title = title;
-    }
+	/**
+	 * Do not use this method. Used internally by the SDK.
+	 */
+	public void setIcon(@Nullable Sprite icon) {
+		this.icon = icon;
+	}
 
-    /**
-     * Do not use this method. Used internally by the SDK.
-     */
-    public void showInfoWindow() {
-        if (!isVisible() || getMapView() == null) {
-            return;
-        }
+	/**
+	 * Do not use this method. Used internally by the SDK.
+	 */
+	public void showInfoWindow() {
+		if (!isVisible() || getMapView() == null) {
+			return;
+		}
 
-        getInfoWindow().adaptDefaultMarker(this);
-        showInfoWindow(getInfoWindow());
-    }
+		getInfoWindow().adaptDefaultMarker(this);
+		showInfoWindow(getInfoWindow());
+	}
 
-    /**
-     * Do not use this method. Used internally by the SDK.
-     */
-    public void showInfoWindow(View view){
-        if (!isVisible() || getMapView() == null) {
-            return;
-        }
+	/**
+	 * Do not use this method. Used internally by the SDK.
+	 */
+	public void showInfoWindow(View view) {
+		if (!isVisible() || getMapView() == null) {
+			return;
+		}
 
-        infoWindow = new InfoWindow(view, getMapView());
-        showInfoWindow(infoWindow);
-    }
+		infoWindow = new InfoWindow(view, getMapView());
+		showInfoWindow(infoWindow);
+	}
 
-    private void showInfoWindow(InfoWindow iw) {
-        iw.open(this, getPosition(), 0, topOffsetPixels);
-        iw.setBoundMarker(this);
-        infoWindowShown = true;
-    }
+	private void showInfoWindow(InfoWindow iw) {
+		iw.open(this, getPosition(), 0, topOffsetPixels);
+		iw.setBoundMarker(this);
+		infoWindowShown = true;
+	}
 
-    /**
-     * Use to set a custom OnTouchListener for the InfoWindow.
-     * By default the InfoWindow will close on touch.
-     * @param listener Custom OnTouchListener
-     */
-    public void setInfoWindowOnTouchListener(View.OnTouchListener  listener) {
-        if (listener == null) {
-            return;
-        }
-        getInfoWindow().setOnTouchListener(listener);
-    }
+	/**
+	 * Use to set a custom OnTouchListener for the InfoWindow.
+	 * By default the InfoWindow will close on touch.
+	 *
+	 * @param listener Custom OnTouchListener
+	 */
+	public void setInfoWindowOnTouchListener(View.OnTouchListener listener) {
+		if (listener == null) {
+			return;
+		}
+		getInfoWindow().setOnTouchListener(listener);
+	}
 
-    /**
-     * Common internal InfoWindow initialization method
-     * @return InfoWindow for Marker
-     */
-    private InfoWindow getInfoWindow() {
-        if (infoWindow == null) {
-            infoWindow = new InfoWindow(R.layout.infowindow_view, getMapView());
-        }
-        return infoWindow;
-    }
+	/**
+	 * Common internal InfoWindow initialization method
+	 *
+	 * @return InfoWindow for Marker
+	 */
+	private InfoWindow getInfoWindow() {
+		if (infoWindow == null) {
+			infoWindow = new InfoWindow(R.layout.infowindow_view, getMapView());
+		}
+		return infoWindow;
+	}
 
-    @Override
-    void setVisible(boolean visible) {
-        super.setVisible(visible);
-        if (!visible && infoWindowShown) {
-            hideInfoWindow();
-        }
-    }
+	@Override
+	void setVisible(boolean visible) {
+		super.setVisible(visible);
+		if (!visible && infoWindowShown) {
+			hideInfoWindow();
+		}
+	}
 
-    //  TODO Method in Google Maps Android API
+	//  TODO Method in Google Maps Android API
 //    public int hashCode()
 
-    /**
-     * Do not use this method. Used internally by the SDK.
-     */
-    public int getTopOffsetPixels() {
-        return topOffsetPixels;
-    }
+	/**
+	 * Do not use this method. Used internally by the SDK.
+	 */
+	public int getTopOffsetPixels() {
+		return topOffsetPixels;
+	}
 
-    /**
-     * Do not use this method. Used internally by the SDK.
-     */
-    public void setTopOffsetPixels(int topOffsetPixels) {
-        this.topOffsetPixels = topOffsetPixels;
-    }
+	/**
+	 * Do not use this method. Used internally by the SDK.
+	 */
+	public void setTopOffsetPixels(int topOffsetPixels) {
+		this.topOffsetPixels = topOffsetPixels;
+	}
 }

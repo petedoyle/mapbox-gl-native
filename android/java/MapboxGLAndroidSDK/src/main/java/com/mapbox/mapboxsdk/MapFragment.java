@@ -12,118 +12,118 @@ import com.mapbox.mapboxsdk.views.MapView;
 
 public class MapFragment extends Fragment {
 
-    //
-    // Static members
-    //
+	//
+	// Static members
+	//
 
-    // Tag used for logging
-    private static final String TAG = "MapFragment";
+	// Tag used for logging
+	private static final String TAG = "MapFragment";
 
-    //
-    // Instance members
-    //
+	//
+	// Instance members
+	//
 
-    // The map
-    private MapView mMap;
+	// The map
+	private MapView mMap;
 
-    //
-    // Lifecycle events
-    //
+	//
+	// Lifecycle events
+	//
 
-    // Called when the fragment is created
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-        Log.v(TAG, "onCreateView");
+	// Called when the fragment is created
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		super.onCreateView(inflater, container, savedInstanceState);
+		Log.v(TAG, "onCreateView");
 
-        // Create the map
-        mMap = (MapView) inflater.inflate(R.layout.mapview, container, false);
+		// Create the map
+		mMap = (MapView) inflater.inflate(R.layout.mapview, container, false);
 
-        // Set accessToken
-        mMap.setAccessToken(ApiAccess.getToken(container.getContext()));
+		// Set accessToken
+		mMap.setAccessToken(ApiAccess.getToken(container.getContext()));
 
-        // Need to pass on any saved state to the map
-        mMap.onCreate(savedInstanceState);
+		// Need to pass on any saved state to the map
+		mMap.onCreate(savedInstanceState);
 
-        // Return the map as the root view
-        return mMap;
-    }
+		// Return the map as the root view
+		return mMap;
+	}
 
-    // Called when the fragment is destroyed
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        Log.v(TAG, "onDestroyView");
+	// Called when the fragment is destroyed
+	@Override
+	public void onDestroyView() {
+		super.onDestroyView();
+		Log.v(TAG, "onDestroyView");
 
-        // Need to pass on to view
-        mMap.onDestroy();
-        mMap = null;
-    }
+		// Need to pass on to view
+		mMap.onDestroy();
+		mMap = null;
+	}
 
-    // Called when the fragment is visible
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.v(TAG, "onStart");
+	// Called when the fragment is visible
+	@Override
+	public void onStart() {
+		super.onStart();
+		Log.v(TAG, "onStart");
 
-        // Need to pass on to view
-        mMap.onStart();
-    }
+		// Need to pass on to view
+		mMap.onStart();
+	}
 
-    // Called when the fragment is invisible
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.v(TAG, "onStop");
+	// Called when the fragment is invisible
+	@Override
+	public void onStop() {
+		super.onStop();
+		Log.v(TAG, "onStop");
 
-        // Need to pass on to view
-        mMap.onStop();
-    }
+		// Need to pass on to view
+		mMap.onStop();
+	}
 
-    // Called when the fragment is in the background
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.v(TAG, "onPause");
+	// Called when the fragment is in the background
+	@Override
+	public void onPause() {
+		super.onPause();
+		Log.v(TAG, "onPause");
 
-        // Need to pass on to view
-        mMap.onPause();
-    }
+		// Need to pass on to view
+		mMap.onPause();
+	}
 
-    // Called when the fragment is no longer in the background
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.v(TAG, "onResume");
+	// Called when the fragment is no longer in the background
+	@Override
+	public void onResume() {
+		super.onResume();
+		Log.v(TAG, "onResume");
 
-        // Need to pass on to view
-        mMap.onResume();
-    }
+		// Need to pass on to view
+		mMap.onResume();
+	}
 
-    // Called before fragment is destroyed
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        Log.v(TAG, "onSaveInstanceState");
+	// Called before fragment is destroyed
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		Log.v(TAG, "onSaveInstanceState");
 
-        // Need to retrieve any saved state from the map
-        mMap.onSaveInstanceState(outState);
-        super.onSaveInstanceState(outState);
-    }
+		// Need to retrieve any saved state from the map
+		mMap.onSaveInstanceState(outState);
+		super.onSaveInstanceState(outState);
+	}
 
-    @Override
-    public void onLowMemory() {
-        Log.v(TAG, "OnLowMemory");
+	@Override
+	public void onLowMemory() {
+		Log.v(TAG, "OnLowMemory");
 
-        // Need to pass on to view
-        mMap.onLowMemory();
-        super.onLowMemory();
-    }
+		// Need to pass on to view
+		mMap.onLowMemory();
+		super.onLowMemory();
+	}
 
-    //
-    // Property methods
-    //
+	//
+	// Property methods
+	//
 
-    public MapView getMap() {
-        return mMap;
-    }
+	public MapView getMap() {
+		return mMap;
+	}
 }

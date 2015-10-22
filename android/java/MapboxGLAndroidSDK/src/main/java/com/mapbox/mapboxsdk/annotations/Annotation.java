@@ -6,108 +6,108 @@ import java.lang.ref.WeakReference;
 
 public abstract class Annotation implements Comparable<Annotation> {
 
-    /**
-     * The annotation id
-     *
-     * Internal C++ id is stored as unsigned int.
-     */
-    private long id = -1; // -1 unless added to a MapView
-    private WeakReference<MapView> mapView;
+	/**
+	 * The annotation id
+	 * <p>
+	 * Internal C++ id is stored as unsigned int.
+	 */
+	private long id = -1; // -1 unless added to a MapView
+	private WeakReference<MapView> mapView;
 
-    private float alpha = 1.0f;
-    private boolean visible = true;
+	private float   alpha   = 1.0f;
+	private boolean visible = true;
 
-    protected Annotation() {}
+	protected Annotation() {
+	}
 
-    public float getAlpha() {
-        return alpha;
-    }
+	public float getAlpha() {
+		return alpha;
+	}
 
-    /**
-     * Do not use this method. Used internally by the SDK.
-     */
-    public long getId() {
-        return id;
-    }
+	void setAlpha(float alpha) {
+		this.alpha = alpha;
+	}
 
-    boolean isVisible() {
-        return visible;
-    }
+	/**
+	 * Do not use this method. Used internally by the SDK.
+	 */
+	public long getId() {
+		return id;
+	}
 
-    public void remove() {
-        if ((mapView == null) || (mapView.get() == null)) {
-            return;
-        }
-        mapView.get().removeAnnotation(this);
-    }
+	/**
+	 * Do not use this method. Used internally by the SDK.
+	 */
+	public void setId(long id) {
+		this.id = id;
+	}
 
-    void setAlpha(float alpha) {
-        this.alpha = alpha;
-    }
+	boolean isVisible() {
+		return visible;
+	}
 
-    /**
-     * Do not use this method. Used internally by the SDK.
-     */
-    public void setId(long id) {
-        this.id = id;
-    }
+	void setVisible(boolean visible) {
+		this.visible = visible;
+	}
 
-    /**
-     * Do not use this method. Used internally by the SDK.
-     */
-    public void setMapView(MapView mapView) {
-        this.mapView = new WeakReference<MapView>(mapView);
-    }
+	public void remove() {
+		if ((mapView == null) || (mapView.get() == null)) {
+			return;
+		}
+		mapView.get().removeAnnotation(this);
+	}
 
-    protected MapView getMapView() {
-        if (mapView == null) {
-            return null;
-        }
-        return mapView.get();
-    }
+	protected MapView getMapView() {
+		if (mapView == null) {
+			return null;
+		}
+		return mapView.get();
+	}
 
-    void setVisible(boolean visible) {
-        this.visible = visible;
-    }
+	/**
+	 * Do not use this method. Used internally by the SDK.
+	 */
+	public void setMapView(MapView mapView) {
+		this.mapView = new WeakReference<MapView>(mapView);
+	}
 
-    // TODO: Implement getZIndex of Google Maps Android API
+	// TODO: Implement getZIndex of Google Maps Android API
 //    public float getZIndex() {
 //
 //    }
 
-    // TODO: Implement setZIndex of Google Maps Android API
+	// TODO: Implement setZIndex of Google Maps Android API
 //    public void setZIndex(float zIndex) {
 //
 //    }
 
+	@Override
+	public boolean equals(Object o) {
+		if (o == null) {
+			return false;
+		}
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null) {
-            return false;
-        }
+		if (o instanceof Annotation) {
+			Annotation comp = (Annotation) o;
+			return id == comp.id;
+		}
+		return false;
+	}
 
-        if (o instanceof Annotation) {
-            Annotation comp = (Annotation) o;
-            return id == comp.id;
-        }
-        return false;
-    }
+	@Override
+	public int compareTo(Annotation annotation) {
 
-    @Override
-    public int compareTo(Annotation annotation) {
+		if (annotation == null) {
+			return -1;
+		}
 
-        if (annotation == null) {
-            return -1;
-        }
+		if (id < annotation.getId()) {
+			return 1;
+		} else if (id > annotation.getId()) {
+			return -1;
+		}
 
-        if (id < annotation.getId()) {
-            return 1;
-        } else if (id > annotation.getId()) {
-            return -1;
-        }
-
-        // Equal
-        return 0;
-    }
+		// Equal
+		return 0;
+	}
 }

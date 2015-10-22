@@ -31,18 +31,18 @@ import static org.hamcrest.Matchers.not;
 @LargeTest
 public class MainActivityTest extends BaseTest {
 
-    private final static String HOME_BUTTON_STRING = "Navigate up";
+	private final static String HOME_BUTTON_STRING = "Navigate up";
 
-    @Rule
-    public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(
-            MainActivity.class);
+	@Rule
+	public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(
+			MainActivity.class);
 
-    private MainActivity mActivity = null;
+	private MainActivity mActivity = null;
 
-    @Before
-    public void setActivity() {
-        mActivity = mActivityRule.getActivity();
-    }
+	@Before
+	public void setActivity() {
+		mActivity = mActivityRule.getActivity();
+	}
 
     /*
      * Note that we need to keep the `test` prefix if we want to be able to run these
@@ -50,242 +50,242 @@ public class MainActivityTest extends BaseTest {
      * https://github.com/awslabs/aws-device-farm-sample-app-for-android/issues/5#issuecomment-138258444
      */
 
-    @Test
-    public void testSanity() {
-        onView(withId(R.id.mainMapView))
-                .check(matches(isDisplayed()));
-    }
+	@Test
+	public void testSanity() {
+		onView(withId(R.id.mainMapView))
+				.check(matches(isDisplayed()));
+	}
 
     /*
      * Check UI ids are visible
      */
 
-    @Test
-    public void testDrawerLayoutIsDisplayed() {
-        onView(withId(R.id.drawer_layout))
-                .check(matches(isDisplayed()));
-    }
+	@Test
+	public void testDrawerLayoutIsDisplayed() {
+		onView(withId(R.id.drawer_layout))
+				.check(matches(isDisplayed()));
+	}
 
-    @Test
-    public void testToolbarIsDisplayed() {
-        onView(withId(R.id.toolbar))
-                .check(matches(isDisplayed()));
-    }
+	@Test
+	public void testToolbarIsDisplayed() {
+		onView(withId(R.id.toolbar))
+				.check(matches(isDisplayed()));
+	}
 
-    @Test
-    public void testContentFrameIsDisplayed() {
-        onView(withId(R.id.content_frame))
-                .check(matches(isDisplayed()));
-    }
+	@Test
+	public void testContentFrameIsDisplayed() {
+		onView(withId(R.id.content_frame))
+				.check(matches(isDisplayed()));
+	}
 
-    @Test
-    public void testViewFpsIsDisplayed() {
-        // By default, R.id.view_fps is not displayed
-        onView(withId(R.id.view_fps))
-                .check(matches(not(isDisplayed())));
-    }
+	@Test
+	public void testViewFpsIsDisplayed() {
+		// By default, R.id.view_fps is not displayed
+		onView(withId(R.id.view_fps))
+				.check(matches(not(isDisplayed())));
+	}
 
-    @Test
-    public void testLocationFABIsDisplayed() {
-        onView(withId(R.id.locationFAB))
-                .check(matches(isDisplayed()));
-    }
+	@Test
+	public void testLocationFABIsDisplayed() {
+		onView(withId(R.id.locationFAB))
+				.check(matches(isDisplayed()));
+	}
 
-    @Test
-    public void testNavViewIsNotDisplayed() {
-        // By default, nav_view not displayed
-        onView(withId(R.id.nav_view))
-                .check(matches(not(isDisplayed())));
-    }
+	@Test
+	public void testNavViewIsNotDisplayed() {
+		// By default, nav_view not displayed
+		onView(withId(R.id.nav_view))
+				.check(matches(not(isDisplayed())));
+	}
 
-    @Test
-    public void testNavViewIsDisplayed() {
-        // However, it's displayed when we click the home icon
-        onView(withContentDescription(HOME_BUTTON_STRING))
-                .perform(click());
-        onView(withId(R.id.nav_view))
-                .check(matches(isDisplayed()));
-    }
+	@Test
+	public void testNavViewIsDisplayed() {
+		// However, it's displayed when we click the home icon
+		onView(withContentDescription(HOME_BUTTON_STRING))
+				.perform(click());
+		onView(withId(R.id.nav_view))
+				.check(matches(isDisplayed()));
+	}
 
     /*
      * Some more tests on the map view (clicks, gestures)
      */
 
-    @Test
-    public void testClickMap() {
-        onView(withId(R.id.mainMapView))
-                .perform(click())
-                .check(matches(isDisplayed()));
-    }
+	@Test
+	public void testClickMap() {
+		onView(withId(R.id.mainMapView))
+				.perform(click())
+				.check(matches(isDisplayed()));
+	}
 
-    @Test
-    public void testDoubleClickMap() {
-        onView(withId(R.id.mainMapView))
-                .perform(doubleClick())
-                .check(matches(isDisplayed()));
-    }
+	@Test
+	public void testDoubleClickMap() {
+		onView(withId(R.id.mainMapView))
+				.perform(doubleClick())
+				.check(matches(isDisplayed()));
+	}
 
-    @Test
-    public void testLongClickMap() {
-        onView(withId(R.id.mainMapView))
-                .perform(longClick())
-                .check(matches(isDisplayed()));
-    }
+	@Test
+	public void testLongClickMap() {
+		onView(withId(R.id.mainMapView))
+				.perform(longClick())
+				.check(matches(isDisplayed()));
+	}
 
-    @Test
-    public void testSwipeLeftMap() {
-        onView(withId(R.id.mainMapView))
-                .perform(swipeLeft())
-                .check(matches(isDisplayed()));
-    }
+	@Test
+	public void testSwipeLeftMap() {
+		onView(withId(R.id.mainMapView))
+				.perform(swipeLeft())
+				.check(matches(isDisplayed()));
+	}
 
-    @Test
-    public void testSwipeRightMap() {
-        onView(withId(R.id.mainMapView))
-                .perform(swipeRight())
-                .check(matches(isDisplayed()));
-    }
+	@Test
+	public void testSwipeRightMap() {
+		onView(withId(R.id.mainMapView))
+				.perform(swipeRight())
+				.check(matches(isDisplayed()));
+	}
 
-    @Test
-    public void testSwipeDownMap() {
-        onView(withId(R.id.mainMapView))
-                .perform(swipeDown())
-                .check(matches(isDisplayed()));
-    }
+	@Test
+	public void testSwipeDownMap() {
+		onView(withId(R.id.mainMapView))
+				.perform(swipeDown())
+				.check(matches(isDisplayed()));
+	}
 
-    @Test
-    public void testSwipeUpMap() {
-        onView(withId(R.id.mainMapView))
-                .perform(swipeUp())
-                .check(matches(isDisplayed()));
-    }
+	@Test
+	public void testSwipeUpMap() {
+		onView(withId(R.id.mainMapView))
+				.perform(swipeUp())
+				.check(matches(isDisplayed()));
+	}
 
     /*
      * Test the main drawer options
      */
 
-    @Test
-    public void testNavViewActionDebug() {
-        onView(withContentDescription(HOME_BUTTON_STRING))
-                .perform(click());
-        onView(withText(R.string.action_debug))
-                .perform(click());
+	@Test
+	public void testNavViewActionDebug() {
+		onView(withContentDescription(HOME_BUTTON_STRING))
+				.perform(click());
+		onView(withText(R.string.action_debug))
+				.perform(click());
 
-        // Clicking the item closes the drawer
-        onView(withId(R.id.nav_view))
-                .check(matches(not(isDisplayed())));
-    }
+		// Clicking the item closes the drawer
+		onView(withId(R.id.nav_view))
+				.check(matches(not(isDisplayed())));
+	}
 
-    @Test
-    public void testNavViewActionPointAnnotations() {
-        onView(withContentDescription(HOME_BUTTON_STRING))
-                .perform(click());
-        onView(withText(R.string.action_point_annotations))
-                .perform(click());
+	@Test
+	public void testNavViewActionPointAnnotations() {
+		onView(withContentDescription(HOME_BUTTON_STRING))
+				.perform(click());
+		onView(withText(R.string.action_point_annotations))
+				.perform(click());
 
-        // Clicking the item closes the drawer
-        onView(withId(R.id.nav_view))
-                .check(matches(not(isDisplayed())));
-    }
+		// Clicking the item closes the drawer
+		onView(withId(R.id.nav_view))
+				.check(matches(not(isDisplayed())));
+	}
 
-    @Test
-    public void testNavViewActionCompass() {
-        onView(withContentDescription(HOME_BUTTON_STRING))
-                .perform(click());
-        onView(withText(R.string.action_compass))
-                .perform(click());
+	@Test
+	public void testNavViewActionCompass() {
+		onView(withContentDescription(HOME_BUTTON_STRING))
+				.perform(click());
+		onView(withText(R.string.action_compass))
+				.perform(click());
 
-        // Clicking the item closes the drawer
-        onView(withId(R.id.nav_view))
-                .check(matches(not(isDisplayed())));
-    }
+		// Clicking the item closes the drawer
+		onView(withId(R.id.nav_view))
+				.check(matches(not(isDisplayed())));
+	}
 
-    @Test
-    public void testNavViewStyleMapboxStreets() {
-        onView(withContentDescription(HOME_BUTTON_STRING))
-                .perform(click());
-        onView(withText(R.string.styleMapboxStreets))
-                .perform(click());
+	@Test
+	public void testNavViewStyleMapboxStreets() {
+		onView(withContentDescription(HOME_BUTTON_STRING))
+				.perform(click());
+		onView(withText(R.string.styleMapboxStreets))
+				.perform(click());
 
-        // Clicking the item closes the drawer
-        onView(withId(R.id.nav_view))
-                .check(matches(not(isDisplayed())));
-    }
+		// Clicking the item closes the drawer
+		onView(withId(R.id.nav_view))
+				.check(matches(not(isDisplayed())));
+	}
 
-    @Test
-    public void testNavViewStyleEmerald() {
-        onView(withContentDescription(HOME_BUTTON_STRING))
-                .perform(click());
-        onView(withText(R.string.styleEmerald))
-                .perform(click());
+	@Test
+	public void testNavViewStyleEmerald() {
+		onView(withContentDescription(HOME_BUTTON_STRING))
+				.perform(click());
+		onView(withText(R.string.styleEmerald))
+				.perform(click());
 
-        // Clicking the item closes the drawer
-        onView(withId(R.id.nav_view))
-                .check(matches(not(isDisplayed())));
-    }
+		// Clicking the item closes the drawer
+		onView(withId(R.id.nav_view))
+				.check(matches(not(isDisplayed())));
+	}
 
-    @Test
-    public void testNavViewStyleLight() {
-        onView(withContentDescription(HOME_BUTTON_STRING))
-                .perform(click());
-        onView(withText(R.string.styleLight))
-                .perform(click());
+	@Test
+	public void testNavViewStyleLight() {
+		onView(withContentDescription(HOME_BUTTON_STRING))
+				.perform(click());
+		onView(withText(R.string.styleLight))
+				.perform(click());
 
-        // Clicking the item closes the drawer
-        onView(withId(R.id.nav_view))
-                .check(matches(not(isDisplayed())));
-    }
+		// Clicking the item closes the drawer
+		onView(withId(R.id.nav_view))
+				.check(matches(not(isDisplayed())));
+	}
 
-    @Test
-    public void testNavViewStyleDark() {
-        onView(withContentDescription(HOME_BUTTON_STRING))
-                .perform(click());
-        onView(withText(R.string.styleDark))
-                .perform(click());
+	@Test
+	public void testNavViewStyleDark() {
+		onView(withContentDescription(HOME_BUTTON_STRING))
+				.perform(click());
+		onView(withText(R.string.styleDark))
+				.perform(click());
 
-        // Clicking the item closes the drawer
-        onView(withId(R.id.nav_view))
-                .check(matches(not(isDisplayed())));
-    }
+		// Clicking the item closes the drawer
+		onView(withId(R.id.nav_view))
+				.check(matches(not(isDisplayed())));
+	}
 
-    @Test
-    public void testNavViewStyleSatellite() {
-        onView(withContentDescription(HOME_BUTTON_STRING))
-                .perform(click());
-        onView(withText(R.string.styleSatellite))
-                .perform(click());
+	@Test
+	public void testNavViewStyleSatellite() {
+		onView(withContentDescription(HOME_BUTTON_STRING))
+				.perform(click());
+		onView(withText(R.string.styleSatellite))
+				.perform(click());
 
-        // Clicking the item closes the drawer
-        onView(withId(R.id.nav_view))
-                .check(matches(not(isDisplayed())));
-    }
+		// Clicking the item closes the drawer
+		onView(withId(R.id.nav_view))
+				.check(matches(not(isDisplayed())));
+	}
 
     /*
      * We can also check the map inner elements are visible
      */
 
-    @Test
-    public void testMapIconContentDescription() {
-        // Mapbox logo
-        onView(withContentDescription(mActivity.getResources()
-                .getString(R.string.mapboxIconContentDescription)))
-                .check(matches(isDisplayed()));
-    }
+	@Test
+	public void testMapIconContentDescription() {
+		// Mapbox logo
+		onView(withContentDescription(mActivity.getResources()
+				.getString(R.string.mapboxIconContentDescription)))
+				.check(matches(isDisplayed()));
+	}
 
-    @Test
-    public void testMapCompassContentDescription() {
-        // Map compass
-        onView(withContentDescription(mActivity.getResources()
-                .getString(R.string.compassContentDescription)))
-                .check(matches(isDisplayed()));
-    }
+	@Test
+	public void testMapCompassContentDescription() {
+		// Map compass
+		onView(withContentDescription(mActivity.getResources()
+				.getString(R.string.compassContentDescription)))
+				.check(matches(isDisplayed()));
+	}
 
-    @Test
-    public void testMapAttributionsIconContentDescription() {
-        // Attribution icon
-        onView(withContentDescription(mActivity.getResources()
-                .getString(R.string.attributionsIconContentDescription)))
-                .check(matches(isDisplayed()));
-    }
+	@Test
+	public void testMapAttributionsIconContentDescription() {
+		// Attribution icon
+		onView(withContentDescription(mActivity.getResources()
+				.getString(R.string.attributionsIconContentDescription)))
+				.check(matches(isDisplayed()));
+	}
 
 }
