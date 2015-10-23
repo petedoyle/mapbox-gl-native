@@ -53,22 +53,7 @@
             </BuildableReference>
             <SkippedTests>
                <Test
-                  Identifier = "MapViewTests/testCenterSet">
-               </Test>
-               <Test
-                  Identifier = "MapViewTests/testCompassTap">
-               </Test>
-               <Test
-                  Identifier = "MapViewTests/testDelegateRegionDidChange">
-               </Test>
-               <Test
-                  Identifier = "MapViewTests/testDelegateRegionWillChange">
-               </Test>
-               <Test
-                  Identifier = "MapViewTests/testDirectionReset">
-               </Test>
-               <Test
-                  Identifier = "MapViewTests/testDirectionSet">
+                  Identifier = "MapViewTests/testUserTrackingModeFollow">
                </Test>
                <Test
                   Identifier = "MapViewTests/testUserTrackingModeFollowWithHeading">
