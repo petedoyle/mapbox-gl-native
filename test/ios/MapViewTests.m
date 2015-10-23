@@ -6,37 +6,13 @@
 #import "Mapbox.h"
 #import "MGLTViewController.h"
 
+#import "LocationMocker/LocationMocker.h"
 #import <CoreLocation/CoreLocation.h>
 #import <KIF/UIAutomationHelper.h>
 
-// lat and long of the mocked current location (Mapbox San Francisco)
-static const CLLocationDegrees kMockedLatitude = 37.775716;
-static const CLLocationDegrees kMockedLongitude = -122.413688;
+@interface MGLMapView (LocationManager)
 
-// heading (values pulled from south-facing device)
-static const double kMockedHeadingAccuracy = 20.0;
-static const double kMockedHeadingTrueHeading = 170.53;
-
-@interface MGLMapView (Extensions)
-
-- (void)mockLocation:(CLLocation *)location;
-
-@end
-
-@implementation MGLMapView (Extensions)
-
-- (void)mockLocation:(CLLocation *)newLocation {
-    SEL selector = @selector(locationManager:didUpdateLocations:);
-    NSMethodSignature *signature = [self methodSignatureForSelector:selector];
-    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
-    invocation.target = self;
-    invocation.selector = selector;
-    CLLocationManager *locationManager = [self valueForKeyPath:@"locationManager"];
-    NSArray<CLLocation *> *locations = @[ newLocation ];
-    [invocation setArgument:&locationManager atIndex:2];
-    [invocation setArgument:&locations atIndex:3];
-    [invocation invoke];
-}
+@property (nonatomic) CLLocationManager *locationManager;
 
 @end
 
@@ -615,7 +591,7 @@ static const double kMockedHeadingTrueHeading = 170.53;
     XCTAssertEqualObjects(notification.name,
                           @"mapViewWillStartLocatingUser",
                           @"mapViewWillStartLocatingUser delegate should receive message");
-    XCTAssertNotNil([tester.mapView valueForKeyPath:@"locationManager"],
+    XCTAssertNotNil(tester.mapView.locationManager,
                  "map view location manager should not be nil");
 
     notification = [system waitForNotificationName:@"mapViewDidStopLocatingUser"
@@ -630,7 +606,7 @@ static const double kMockedHeadingTrueHeading = 170.53;
     XCTAssertEqual(tester.mapView.userTrackingMode,
                    MGLUserTrackingModeNone,
                    @"user tracking mode should be none");
-    XCTAssertNil([tester.mapView valueForKeyPath:@"locationManager"],
+    XCTAssertNil(tester.mapView.locationManager,
                  "map view location manager should be nil");
 }
 
@@ -643,10 +619,9 @@ static const double kMockedHeadingTrueHeading = 170.53;
 }
 
 - (void)testUserTrackingModeFollow {
-    [tester.mapView mockLocation:[[CLLocation alloc] initWithLatitude:kMockedLatitude longitude:kMockedLongitude]];
-    [self approveLocationIfNeeded];
     tester.mapView.userTrackingMode = MGLUserTrackingModeFollow;
-    [tester waitForAnimationsToFinish];
+    [self approveLocationIfNeeded];
+    [tester waitForTimeInterval:2];
 
     MGLMapView *map = tester.mapView;
 
@@ -669,11 +644,9 @@ static const double kMockedHeadingTrueHeading = 170.53;
 }
 
 - (void)testUserTrackingModeFollowWithHeading {
-    [tester.mapView mockLocation:[[CLLocation alloc] initWithLatitude:kMockedLatitude longitude:kMockedLongitude]];
-    [tester waitForTimeInterval:1];
-    [self approveLocationIfNeeded];
     tester.mapView.userTrackingMode = MGLUserTrackingModeFollowWithHeading;
-    [tester waitForAnimationsToFinish];
+    [self approveLocationIfNeeded];
+    [tester waitForTimeInterval:2];
 
     MGLMapView *map = tester.mapView;
 
