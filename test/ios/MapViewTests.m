@@ -641,42 +641,4 @@
                    @"user tracking mode should reset to none");
 }
 
-- (void)testUserTrackingModeFollowWithHeading {
-    tester.mapView.userTrackingMode = MGLUserTrackingModeFollowWithHeading;
-    [self approveLocationIfNeeded];
-    [tester waitForTimeInterval:2];
-
-    XCTAssertTrue(tester.mapView.userLocationVisible,
-                  @"user location should be visible");
-    XCTAssertEqual(tester.mapView.userLocation.coordinate.latitude,
-                   kMockedLatitude,
-                   @"user location latitude should match mocked latitude");
-    XCTAssertEqual(tester.mapView.userLocation.coordinate.longitude,
-                   kMockedLongitude,
-                   @"user location longitude should match mocked longitude");
-    
-    XCTAssertEqual(tester.mapView.userTrackingMode,
-                   MGLUserTrackingModeFollowWithHeading,
-                   @"user tracking mode should be follow with heading");
-    XCTAssertEqual(tester.mapView.userLocation.heading.trueHeading,
-                   kMockedHeadingTrueHeading,
-                   @"user true heading should match mocked true heading");
-    XCTAssertEqual(tester.mapView.userLocation.heading.headingAccuracy,
-                   kMockedHeadingAccuracy,
-                   @"user heading accuracy should match mocked accuracy");
-    
-    [tester.compass tap];
-    
-    [tester waitForTimeInterval:1];
-    
-    XCTAssertTrue(tester.mapView.userLocationVisible,
-                  @"user location should be visible");
-    XCTAssertEqual(tester.mapView.userTrackingMode,
-                   MGLUserTrackingModeFollow,
-                   @"user tracking mode should be follow");
-    XCTAssertEqual(tester.mapView.direction,
-                   0,
-                   @"user heading should be reset to zero/north");
-}
-
 @end
