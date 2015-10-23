@@ -76,7 +76,6 @@
         {
           'files': [
             '../common/ca-bundle.crt',
-            '../styles/styles'
           ],
           'destination': '<(pwd)/../android/java/MapboxGLAndroidSDK/src/main/assets'
         },

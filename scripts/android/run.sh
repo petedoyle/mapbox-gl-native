@@ -12,9 +12,6 @@ export MASON_ANDROID_ABI=${ANDROID_ABI}
 # Build
 ################################################################################
 
-mapbox_time "checkout_styles" \
-git submodule update --init styles
-
 mkdir -p ./android/java/MapboxGLAndroidSDKTestApp/src/main/res/raw
 echo "${MAPBOX_ACCESS_TOKEN}" > ./android/java/MapboxGLAndroidSDKTestApp/src/main/res/raw/token.txt
 

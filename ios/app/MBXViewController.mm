@@ -331,7 +331,7 @@ static NSUInteger const kStyleVersion = 8;
     }
 
     self.mapView.styleURL = [NSURL URLWithString:
-        [NSString stringWithFormat:@"asset://styles/%@-v%lu.json",
+        [NSString stringWithFormat:@"mapbox://styles/mapbox/%@-v%lu",
             [styleName lowercaseString],
             (unsigned long)kStyleVersion]];
 
