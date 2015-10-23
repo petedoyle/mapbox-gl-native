@@ -623,8 +623,6 @@
     [self approveLocationIfNeeded];
     [tester waitForTimeInterval:2];
 
-    MGLMapView *map = tester.mapView;
-
     XCTAssertTrue(tester.mapView.userLocationVisible,
                   @"user location should be visible");
     XCTAssertEqual(tester.mapView.userLocation.coordinate.latitude,
@@ -647,8 +645,6 @@
     tester.mapView.userTrackingMode = MGLUserTrackingModeFollowWithHeading;
     [self approveLocationIfNeeded];
     [tester waitForTimeInterval:2];
-
-    MGLMapView *map = tester.mapView;
 
     XCTAssertTrue(tester.mapView.userLocationVisible,
                   @"user location should be visible");
