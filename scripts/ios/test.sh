@@ -4,6 +4,8 @@ set -e
 set -o pipefail
 set -u
 
+xcrun simctl erase all
+
 xcodebuild \
     -project ./test/ios/ios-tests.xcodeproj \
     -scheme 'Mapbox GL Tests' \
