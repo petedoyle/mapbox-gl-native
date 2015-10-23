@@ -6,13 +6,33 @@
 #import "Mapbox.h"
 #import "MGLTViewController.h"
 
-#import "LocationMocker/LocationMocker.h"
 #import <CoreLocation/CoreLocation.h>
 #import <KIF/UIAutomationHelper.h>
 
-@interface MGLMapView (LocationManager)
+// Mapbox San Francisco
+static const CLLocationDegrees kMockedLatitude = 37.775716;
+static const CLLocationDegrees kMockedLongitude = -122.413688;
 
-@property (nonatomic) CLLocationManager *locationManager;
+@interface MGLMapView (Extensions)
+
+- (void)mockLocation:(CLLocation *)location;
+
+@end
+
+@implementation MGLMapView (Extensions)
+
+- (void)mockLocation:(CLLocation *)newLocation {
+    SEL selector = @selector(locationManager:didUpdateLocations:);
+    NSMethodSignature *signature = [self methodSignatureForSelector:selector];
+    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
+    invocation.target = self;
+    invocation.selector = selector;
+    CLLocationManager *locationManager = [self valueForKeyPath:@"locationManager"];
+    NSArray<CLLocation *> *locations = @[ newLocation ];
+    [invocation setArgument:&locationManager atIndex:2];
+    [invocation setArgument:&locations atIndex:3];
+    [invocation invoke];
+}
 
 @end
 
@@ -591,7 +611,7 @@
     XCTAssertEqualObjects(notification.name,
                           @"mapViewWillStartLocatingUser",
                           @"mapViewWillStartLocatingUser delegate should receive message");
-    XCTAssertNotNil(tester.mapView.locationManager,
+    XCTAssertNotNil([tester.mapView valueForKeyPath:@"locationManager"],
                  "map view location manager should not be nil");
 
     notification = [system waitForNotificationName:@"mapViewDidStopLocatingUser"
@@ -606,7 +626,7 @@
     XCTAssertEqual(tester.mapView.userTrackingMode,
                    MGLUserTrackingModeNone,
                    @"user tracking mode should be none");
-    XCTAssertNil(tester.mapView.locationManager,
+    XCTAssertNil([tester.mapView valueForKeyPath:@"locationManager"],
                  "map view location manager should be nil");
 }
 
@@ -620,6 +640,7 @@
 
 - (void)testUserTrackingModeFollow {
     tester.mapView.userTrackingMode = MGLUserTrackingModeFollow;
+    [tester.mapView mockLocation:[[CLLocation alloc] initWithLatitude:kMockedLatitude longitude:kMockedLongitude]];
     [self approveLocationIfNeeded];
     [tester waitForTimeInterval:2];
 
